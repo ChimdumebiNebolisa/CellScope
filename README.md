@@ -6,7 +6,6 @@ Battery diagnostics tool: analyze measured battery data via CSV upload or manual
 
 - **frontend/** — Next.js + TypeScript app (UI, upload, manual entry, dashboard)
 - **backend/** — Go REST API (validation, analysis, health classification)
-- **docs/** — Spec, plan, milestones, guardrails
 
 ## Run locally
 
@@ -31,7 +30,7 @@ cd backend
 go run ./cmd/server
 ```
 
-Backend listens on **http://localhost:8080** and exposes `/health`.
+Backend listens on **http://localhost:8080** (or set `PORT` for another port) and exposes `/health` and `POST /api/analyze`.
 
 **Terminal 2 — Frontend:**
 
@@ -53,7 +52,9 @@ NEXT_PUBLIC_API_URL=http://localhost:8080
 
 ### Verify
 
-Open http://localhost:3000. The page should show “Backend connection” and “✓ CellScope backend is running” when the backend is up.
+Open http://localhost:3000. The page should show “Backend connection” and “✓ CellScope backend is running” when the backend is up. Use “Test analyze (POST /api/analyze)” to confirm the analysis route.
+
+To verify milestones 1.1–1.3 from the repo root (PowerShell): `.\scripts\verify-milestone-1.ps1`
 
 ## Checkpoint 1.1
 
