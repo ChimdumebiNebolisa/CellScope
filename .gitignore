@@ -1,0 +1,10 @@
+# Root node_modules (concurrently etc.)
+node_modules
+
+# Local env
+.env
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
