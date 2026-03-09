@@ -1,11 +1,11 @@
 # CellScope
 
-Battery diagnostics tool: analyze measured battery data via CSV upload or manual entry.
+Battery diagnostics tool: analyze measured battery data via CSV upload or manual entry. Get summary metrics, threshold alerts, anomaly detection, and health classification with no account required.
 
 ## Project structure
 
-- **frontend/** — Next.js + TypeScript app (UI, upload, manual entry, dashboard)
-- **backend/** — Go REST API (validation, analysis, health classification)
+- **frontend/** — Next.js + TypeScript (CSV upload, manual entry, dashboard, export, optional local save)
+- **backend/** — Go REST API (validation, metrics, alerts, anomalies, health classification)
 
 ## Run locally
 
@@ -30,7 +30,7 @@ cd backend
 go run ./cmd/server
 ```
 
-Backend listens on **http://localhost:8080** (or set `PORT` for another port) and exposes `/health` and `POST /api/analyze`.
+Backend listens on **http://localhost:8080** and exposes `/health` and `POST /api/analyze`.
 
 **Terminal 2 — Frontend:**
 
@@ -40,26 +40,28 @@ npm install
 npm run dev
 ```
 
-Frontend runs at **http://localhost:3000** and calls the backend at `http://localhost:8080` by default.
+Frontend runs at **http://localhost:3000** and uses `http://localhost:8080` for the API by default. Override with `frontend/.env.local`: `NEXT_PUBLIC_API_URL=http://localhost:8080`
 
-Optional: create `frontend/.env.local` with:
+## Verify the full flow
 
-```
-NEXT_PUBLIC_API_URL=http://localhost:8080
-```
+1. Open http://localhost:3000. Confirm "Backend connection" shows ✓ when the backend is running.
+2. **Input:** Upload a CSV (columns: `timestamp`, `voltage`, `current`, `temperature`) or use **Load sample dataset** to run the built-in demo CSV.
+3. **Results:** Health summary, alerts, charts, and anomalies appear below.
+4. **Export:** Use "Export JSON summary" and "Export anomalies CSV" when results are present.
+5. **Optional:** Save the current dataset and results under "Saved locally" and load or delete sessions later.
 
-(Defaults to this URL if unset.)
+A sample CSV is at `frontend/public/sample-battery-data.csv` and is used by the "Load sample dataset" button.
 
-### Verify
+## Key technical decisions
 
-Open http://localhost:3000. The page should show “Backend connection” and “✓ CellScope backend is running” when the backend is up. Use “Test analyze (POST /api/analyze)” to confirm the analysis route.
+| Decision | Context | Alternatives | Reason | Trade-offs |
+|----------|---------|--------------|--------|------------|
+| Next.js frontend + Go backend | Clear separation of UI and analysis. | Single stack (e.g. all Node), or Go-only with templating. | Keeps analysis logic in one place; frontend stays thin and calls API only. | Two runtimes to run locally; CORS/API contract must be kept in sync. |
+| Rule-based health classification | Spec requires Stable / Warning / Critical without ML. | ML or heuristic scoring. | Predictable, testable, and easy to explain. | Less adaptive than learned models. |
+| No server-side persistence | Spec: no accounts; datasets are request-scoped. | DB or file storage on server. | Simpler deployment and no PII storage. | Users cannot resume across devices. |
+| Optional IndexedDB in browser | Spec allows optional local save. | No persistence; or server-side only. | Users can save/load in same browser without accounts. | Data is device-specific and can be cleared with site data. |
+| Request-scoped, in-memory analysis | Each POST /api/analyze is independent. | Queues, caching, or stored state. | No global state; easy to reason about and scale horizontally. | Every analysis recomputes from scratch. |
 
-To verify milestones 1.1–1.3 from the repo root (PowerShell): `.\scripts\verify-milestone-1.ps1`
+## License
 
-## Checkpoint 1.1
-
-- [x] Next.js frontend project
-- [x] Go backend project
-- [x] Basic folder structure (frontend/, backend/cmd/server, backend/internal)
-- [x] Local run workflow (run backend then frontend; frontend calls backend)
-- [x] Frontend can call backend successfully (/health)
+See repository.

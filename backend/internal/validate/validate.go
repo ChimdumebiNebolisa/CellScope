@@ -5,9 +5,19 @@ package validate
 import (
 	"math"
 	"strconv"
+	"time"
 
 	"cellscope/backend/internal/contract"
 )
+
+// Timestamp layouts accepted for parsing (ISO 8601 and common variants).
+var timestampLayouts = []string{
+	time.RFC3339,
+	time.RFC3339Nano,
+	"2006-01-02T15:04:05",
+	"2006-01-02 15:04:05",
+	"2006-01-02",
+}
 
 // Result holds the outcome of validation. If valid, Normalized is ready for analysis.
 type Result struct {
@@ -33,6 +43,8 @@ func ValidateRequest(req *contract.AnalysisRequest) Result {
 		prefix := readingPrefix(i)
 		if r.Timestamp == "" {
 			out.Errors = append(out.Errors, prefix+"missing timestamp")
+		} else if !isParseableTimestamp(r.Timestamp) {
+			out.Errors = append(out.Errors, prefix+"invalid timestamp format (use ISO 8601, e.g. 2006-01-02T15:04:05Z)")
 		}
 		if !isFinite(r.Voltage) {
 			out.Errors = append(out.Errors, prefix+"invalid voltage (must be a finite number)")
@@ -43,7 +55,7 @@ func ValidateRequest(req *contract.AnalysisRequest) Result {
 		if !isFinite(r.Temperature) {
 			out.Errors = append(out.Errors, prefix+"invalid temperature (must be a finite number)")
 		}
-		if r.Timestamp != "" && isFinite(r.Voltage) && isFinite(r.Current) && isFinite(r.Temperature) {
+		if r.Timestamp != "" && isParseableTimestamp(r.Timestamp) && isFinite(r.Voltage) && isFinite(r.Current) && isFinite(r.Temperature) {
 			out.Normalized = append(out.Normalized, contract.BatteryReading{
 				Timestamp:   r.Timestamp,
 				Voltage:     r.Voltage,
@@ -64,4 +76,13 @@ func readingPrefix(index int) string {
 
 func isFinite(f float64) bool {
 	return !math.IsNaN(f) && !math.IsInf(f, 0)
+}
+
+func isParseableTimestamp(s string) bool {
+	for _, layout := range timestampLayouts {
+		if _, err := time.Parse(layout, s); err == nil {
+			return true
+		}
+	}
+	return false
 }

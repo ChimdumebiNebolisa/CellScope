@@ -1,8 +1,10 @@
 // Package api holds analysis and other API handlers.
+// All analysis is request-scoped and in-memory only: no global state or server-side persistence.
 package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"cellscope/backend/internal/alerts"
@@ -16,10 +18,11 @@ import (
 )
 
 const maxRequestBodyBytes = 1 << 20 // 1 MiB
+const maxReadings = 50000
 
 // AnalyzeHandler handles POST /api/analyze. It accepts a dataset payload and returns
-// a structured analysis response. For checkpoint 1.3 this is a placeholder that
-// returns the contract shape without full analysis logic.
+// a structured analysis response. Analysis is request-scoped and in-memory only;
+// no data is stored on the server.
 func AnalyzeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -42,7 +45,12 @@ func AnalyzeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Build response from normalized readings (summary metrics computed; alerts/classification in later checkpoints).
+	if len(v.Normalized) > maxReadings {
+		writeError(w, fmt.Sprintf("dataset too large (max %d readings)", maxReadings), http.StatusBadRequest)
+		return
+	}
+
+	// Build response from normalized readings (in-memory only; no server-side persistence).
 	resp := buildAnalysisResponse(v.Normalized)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
