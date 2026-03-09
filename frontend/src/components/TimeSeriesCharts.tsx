@@ -14,6 +14,7 @@ import {
 import { Line } from "react-chartjs-2";
 import annotationPlugin from "chartjs-plugin-annotation";
 import type { ChartSeries, Anomaly } from "@/types/contract";
+import { theme } from "@/theme";
 
 ChartJS.register(
   CategoryScale,
@@ -55,7 +56,7 @@ function buildChartOptions(
                     xMax: a.index,
                     yMin: yMinVal,
                     yMax: yMaxVal,
-                    borderColor: "rgba(220, 53, 69, 0.6)",
+                    borderColor: theme.chart.anomaly,
                     borderWidth: 1,
                     borderDash: [4, 2],
                     label: { display: false },
@@ -132,9 +133,9 @@ export function TimeSeriesCharts({ chartSeries, anomalies = [] }: Props) {
   const anomalyAnnotations =
     anomalyIndices.length > 0 ? anomalyIndices.map((index) => ({ index })) : undefined;
 
-  const voltageData = buildData(voltageSeries, voltageSmoothed, "rgb(13, 110, 253)", "rgb(111, 66, 193)");
-  const currentData = buildData(currentSeries, currentSmoothed, "rgb(25, 135, 84)", "rgb(13, 202, 240)");
-  const tempData = buildData(tempSeries, tempSmoothed, "rgb(253, 126, 20)", "rgb(214, 51, 132)");
+  const voltageData = buildData(voltageSeries, voltageSmoothed, theme.chart.voltage, theme.chart.voltageSmoothed);
+  const currentData = buildData(currentSeries, currentSmoothed, theme.chart.current, theme.chart.currentSmoothed);
+  const tempData = buildData(tempSeries, tempSmoothed, theme.chart.temperature, theme.chart.temperatureSmoothed);
 
   const voltageYExtent = (() => {
     if (!voltageSeries?.dataPoints?.length) return undefined;
@@ -156,12 +157,12 @@ export function TimeSeriesCharts({ chartSeries, anomalies = [] }: Props) {
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {voltageData && (
         <div>
-          <h4 style={{ marginBottom: "0.5rem", fontSize: "14px" }}>Voltage over time</h4>
+          <h4 style={{ marginBottom: "0.5rem", fontSize: "14px", color: theme.text }}>Voltage over time</h4>
           <div style={{ height: `${height}px` }}>
             <Line data={voltageData} options={optionsVoltage} />
           </div>
           {anomalyIndices.length > 0 && (
-            <p style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>
+            <p style={{ fontSize: "12px", color: theme.muted, marginTop: "4px" }}>
               Dashed vertical lines: voltage drop anomalies
             </p>
           )}
@@ -169,7 +170,7 @@ export function TimeSeriesCharts({ chartSeries, anomalies = [] }: Props) {
       )}
       {currentData && (
         <div>
-          <h4 style={{ marginBottom: "0.5rem", fontSize: "14px" }}>Current over time</h4>
+          <h4 style={{ marginBottom: "0.5rem", fontSize: "14px", color: theme.text }}>Current over time</h4>
           <div style={{ height: `${height}px` }}>
             <Line data={currentData} options={buildChartOptions()} />
           </div>
@@ -177,14 +178,14 @@ export function TimeSeriesCharts({ chartSeries, anomalies = [] }: Props) {
       )}
       {tempData && (
         <div>
-          <h4 style={{ marginBottom: "0.5rem", fontSize: "14px" }}>Temperature over time</h4>
+          <h4 style={{ marginBottom: "0.5rem", fontSize: "14px", color: theme.text }}>Temperature over time</h4>
           <div style={{ height: `${height}px` }}>
             <Line data={tempData} options={buildChartOptions()} />
           </div>
         </div>
       )}
       {!voltageData && !currentData && !tempData && (
-        <p style={{ color: "#666", fontSize: "14px" }}>No chart data.</p>
+        <p style={{ color: theme.muted, fontSize: "14px" }}>No chart data.</p>
       )}
     </div>
   );

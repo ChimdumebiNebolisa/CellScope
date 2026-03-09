@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   description: "Battery diagnostics tool",
 };
 
+import "./globals.css";
+
 export default function RootLayout({
   children,
 }: Readonly<{

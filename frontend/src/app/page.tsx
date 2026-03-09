@@ -12,6 +12,7 @@ import {
   deleteSession,
   type SessionMeta,
 } from "@/lib/persistence";
+import { theme } from "@/theme";
 
 const TimeSeriesCharts = dynamic(
   () => import("@/components/TimeSeriesCharts").then((m) => m.TimeSeriesCharts),
@@ -319,23 +320,23 @@ export default function Home() {
   };
 
   return (
-    <main style={{ padding: "2rem", fontFamily: "system-ui" }}>
-      <h1>CellScope</h1>
-      <p>Battery diagnostics tool</p>
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Backend connection</h2>
-        {backendStatus === null && <p>Checking backend…</p>}
+    <main style={{ padding: "2rem", maxWidth: "56rem", margin: "0 auto" }}>
+      <h1 style={{ color: theme.primary, marginBottom: "0.25rem" }}>CellScope</h1>
+      <p style={{ color: theme.muted, marginTop: 0 }}>Battery diagnostics tool</p>
+      <section style={{ marginTop: "1.5rem", padding: "1rem", background: theme.surface, borderRadius: "8px", border: `1px solid ${theme.border}` }}>
+        <h2 style={{ color: theme.text, marginTop: 0, fontSize: "1.1rem" }}>Backend connection</h2>
+        {backendStatus === null && <p style={{ color: theme.muted }}>Checking backend…</p>}
         {backendStatus?.ok && (
-          <p style={{ color: "green" }}>✓ {backendStatus.message}</p>
+          <p style={{ color: theme.success, margin: 0 }}>✓ {backendStatus.message}</p>
         )}
         {backendStatus && !backendStatus.ok && (
-          <p style={{ color: "red" }}>✗ {backendStatus.error}</p>
+          <p style={{ color: theme.error, margin: 0 }}>✗ {backendStatus.error}</p>
         )}
       </section>
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>CSV upload</h2>
-        <p style={{ marginBottom: "0.5rem", color: "#666", fontSize: "14px" }}>
-          Required columns: <code>timestamp</code>, <code>voltage</code>, <code>current</code>, <code>temperature</code>.
+      <section style={{ marginTop: "1.5rem", padding: "1rem", background: theme.surfaceMuted, borderRadius: "8px", border: `1px solid ${theme.border}` }}>
+        <h2 style={{ color: theme.text, marginTop: 0, fontSize: "1.1rem" }}>CSV upload</h2>
+        <p style={{ marginBottom: "0.5rem", color: theme.muted, fontSize: "14px" }}>
+          Required columns: <code style={{ background: theme.inputBg, padding: "2px 6px", borderRadius: "4px", border: `1px solid ${theme.borderMuted}` }}>timestamp</code>, <code style={{ background: theme.inputBg, padding: "2px 6px", borderRadius: "4px", border: `1px solid ${theme.borderMuted}` }}>voltage</code>, <code style={{ background: theme.inputBg, padding: "2px 6px", borderRadius: "4px", border: `1px solid ${theme.borderMuted}` }}>current</code>, <code style={{ background: theme.inputBg, padding: "2px 6px", borderRadius: "4px", border: `1px solid ${theme.borderMuted}` }}>temperature</code>.
         </p>
         <input
           type="file"
@@ -346,9 +347,9 @@ export default function Home() {
         />
         {csvError && (
           <div style={{ marginTop: "0.5rem" }}>
-            <p style={{ color: "red" }}>✗ {csvError}</p>
+            <p style={{ color: theme.error, margin: 0 }}>✗ {csvError}</p>
             {csvDetails && csvDetails.length > 0 && (
-              <ul style={{ color: "#c00", fontSize: "13px", marginTop: "0.25rem", paddingLeft: "1.25rem" }}>
+              <ul style={{ color: theme.error, fontSize: "13px", marginTop: "0.25rem", paddingLeft: "1.25rem" }}>
                 {csvDetails.slice(0, 10).map((d, i) => (
                   <li key={i}>{d}</li>
                 ))}
@@ -358,15 +359,15 @@ export default function Home() {
           </div>
         )}
       </section>
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Manual entry</h2>
-        <p style={{ marginBottom: "0.5rem", color: "#666", fontSize: "14px" }}>
+      <section style={{ marginTop: "1.5rem", padding: "1rem", background: theme.surface, borderRadius: "8px", border: `1px solid ${theme.border}` }}>
+        <h2 style={{ color: theme.text, marginTop: 0, fontSize: "1.1rem" }}>Manual entry</h2>
+        <p style={{ marginBottom: "0.5rem", color: theme.muted, fontSize: "14px" }}>
           Add, edit, or delete rows below. All fields are required for each row. Then click Analyze.
         </p>
         {manualValidationErrors && manualValidationErrors.length > 0 && (
           <div style={{ marginBottom: "0.5rem" }}>
-            <p style={{ color: "#c00", fontSize: "14px", marginBottom: "0.25rem" }}>Please fix before analyzing:</p>
-            <ul style={{ color: "#c00", fontSize: "13px", margin: 0, paddingLeft: "1.25rem" }}>
+            <p style={{ color: theme.error, fontSize: "14px", marginBottom: "0.25rem" }}>Please fix before analyzing:</p>
+            <ul style={{ color: theme.error, fontSize: "13px", margin: 0, paddingLeft: "1.25rem" }}>
               {manualValidationErrors.map((msg, i) => (
                 <li key={i}>{msg}</li>
               ))}
@@ -377,62 +378,62 @@ export default function Home() {
           <table style={{ borderCollapse: "collapse", minWidth: "420px", fontSize: "14px" }}>
             <thead>
               <tr>
-                <th style={{ textAlign: "left", padding: "4px 6px", borderBottom: "1px solid #ccc" }}>Timestamp (required)</th>
-                <th style={{ textAlign: "left", padding: "4px 6px", borderBottom: "1px solid #ccc" }}>Voltage (V, required)</th>
-                <th style={{ textAlign: "left", padding: "4px 6px", borderBottom: "1px solid #ccc" }}>Current (A, required)</th>
-                <th style={{ textAlign: "left", padding: "4px 6px", borderBottom: "1px solid #ccc" }}>Temperature (°C, required)</th>
-                <th style={{ width: "48px", borderBottom: "1px solid #ccc" }} />
+                <th style={{ textAlign: "left", padding: "6px 8px", borderBottom: `2px solid ${theme.borderMuted}`, color: theme.text }}>Timestamp (required)</th>
+                <th style={{ textAlign: "left", padding: "6px 8px", borderBottom: `2px solid ${theme.borderMuted}`, color: theme.text }}>Voltage (V, required)</th>
+                <th style={{ textAlign: "left", padding: "6px 8px", borderBottom: `2px solid ${theme.borderMuted}`, color: theme.text }}>Current (A, required)</th>
+                <th style={{ textAlign: "left", padding: "6px 8px", borderBottom: `2px solid ${theme.borderMuted}`, color: theme.text }}>Temperature (°C, required)</th>
+                <th style={{ width: "48px", borderBottom: `2px solid ${theme.borderMuted}` }} />
               </tr>
             </thead>
             <tbody>
               {manualRows.map((row) => (
                 <tr key={row.id}>
-                  <td style={{ padding: "2px 4px" }}>
+                  <td style={{ padding: "4px 6px", borderBottom: `1px solid ${theme.border}` }}>
                     <input
                       type="text"
                       value={row.timestamp}
                       onChange={(e) => updateManualRow(row.id, "timestamp", e.target.value)}
                       placeholder="e.g. 2025-03-09T10:00:00Z"
-                      style={{ width: "100%", minWidth: "160px", boxSizing: "border-box" }}
+                      style={{ width: "100%", minWidth: "160px", boxSizing: "border-box", padding: "6px 8px", border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", background: theme.inputBg }}
                     />
                   </td>
-                  <td style={{ padding: "2px 4px" }}>
+                  <td style={{ padding: "4px 6px", borderBottom: `1px solid ${theme.border}` }}>
                     <input
                       type="number"
                       step="any"
                       value={row.voltage}
                       onChange={(e) => updateManualRow(row.id, "voltage", e.target.value)}
                       placeholder="3.85"
-                      style={{ width: "80px", boxSizing: "border-box" }}
+                      style={{ width: "80px", boxSizing: "border-box", padding: "6px 8px", border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", background: theme.inputBg }}
                     />
                   </td>
-                  <td style={{ padding: "2px 4px" }}>
+                  <td style={{ padding: "4px 6px", borderBottom: `1px solid ${theme.border}` }}>
                     <input
                       type="number"
                       step="any"
                       value={row.current}
                       onChange={(e) => updateManualRow(row.id, "current", e.target.value)}
                       placeholder="1.2"
-                      style={{ width: "80px", boxSizing: "border-box" }}
+                      style={{ width: "80px", boxSizing: "border-box", padding: "6px 8px", border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", background: theme.inputBg }}
                     />
                   </td>
-                  <td style={{ padding: "2px 4px" }}>
+                  <td style={{ padding: "4px 6px", borderBottom: `1px solid ${theme.border}` }}>
                     <input
                       type="number"
                       step="any"
                       value={row.temperature}
                       onChange={(e) => updateManualRow(row.id, "temperature", e.target.value)}
                       placeholder="28"
-                      style={{ width: "80px", boxSizing: "border-box" }}
+                      style={{ width: "80px", boxSizing: "border-box", padding: "6px 8px", border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", background: theme.inputBg }}
                     />
                   </td>
-                  <td style={{ padding: "2px 4px" }}>
+                  <td style={{ padding: "4px 6px", borderBottom: `1px solid ${theme.border}` }}>
                     <button
                       type="button"
                       onClick={() => deleteManualRow(row.id)}
                       disabled={manualRows.length <= 1}
                       title="Delete row"
-                      style={{ padding: "2px 8px" }}
+                      style={{ padding: "4px 10px", background: theme.surfaceMuted, border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", color: theme.text, cursor: manualRows.length <= 1 ? "not-allowed" : "pointer" }}
                     >
                       Delete
                     </button>
@@ -442,11 +443,12 @@ export default function Home() {
             </tbody>
           </table>
         </div>
-        <div style={{ marginTop: "0.5rem", display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ marginTop: "0.75rem", display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
           <button
             type="button"
             onClick={addManualRow}
             disabled={isAnalyzing || manualRows.length >= MAX_MANUAL_ROWS}
+            style={{ padding: "8px 14px", background: theme.surfaceMuted, border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", color: theme.text, cursor: isAnalyzing || manualRows.length >= MAX_MANUAL_ROWS ? "not-allowed" : "pointer", fontWeight: 500 }}
           >
             Add row
           </button>
@@ -454,23 +456,24 @@ export default function Home() {
             type="button"
             onClick={submitManualEntries}
             disabled={backendStatus?.ok !== true || isAnalyzing}
+            style={{ padding: "8px 14px", background: theme.primary, border: "none", borderRadius: "6px", color: "#fff", cursor: backendStatus?.ok !== true || isAnalyzing ? "not-allowed" : "pointer", fontWeight: 600 }}
           >
             Analyze
           </button>
           {manualRows.length >= MAX_MANUAL_ROWS && (
-            <span style={{ fontSize: "13px", color: "#666" }}>
+            <span style={{ fontSize: "13px", color: theme.muted }}>
               Maximum {MAX_MANUAL_ROWS} rows. Delete rows to add more.
             </span>
           )}
         </div>
       </section>
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Saved locally</h2>
-        <p style={{ marginBottom: "0.5rem", color: "#666", fontSize: "14px" }}>
+      <section style={{ marginTop: "1.5rem", padding: "1rem", background: theme.surfaceAlt, borderRadius: "8px", border: `1px solid ${theme.border}` }}>
+        <h2 style={{ color: theme.text, marginTop: 0, fontSize: "1.1rem" }}>Saved locally</h2>
+        <p style={{ marginBottom: "0.5rem", color: theme.muted, fontSize: "14px" }}>
           Save the current dataset (and analysis result if any) to this browser. No account required.
         </p>
         {persistenceError && (
-          <p style={{ marginBottom: "0.5rem", color: "#c00", fontSize: "14px" }}>{persistenceError}</p>
+          <p style={{ marginBottom: "0.5rem", color: theme.error, fontSize: "14px" }}>{persistenceError}</p>
         )}
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center", marginBottom: "0.75rem" }}>
           <input
@@ -478,38 +481,38 @@ export default function Home() {
             value={saveName}
             onChange={(e) => setSaveName(e.target.value)}
             placeholder="Session name (optional)"
-            style={{ padding: "6px 8px", minWidth: "180px" }}
+            style={{ padding: "8px 12px", minWidth: "180px", border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", background: theme.inputBg }}
           />
-          <button type="button" onClick={handleSave} style={{ padding: "6px 12px" }}>
+          <button type="button" onClick={handleSave} style={{ padding: "8px 14px", background: theme.primary, border: "none", borderRadius: "6px", color: "#fff", cursor: "pointer", fontWeight: 600 }}>
             Save current
           </button>
         </div>
         <div
           style={{
             padding: "1rem",
-            background: "#f8f9fa",
+            background: theme.inputBg,
             borderRadius: "6px",
-            border: "1px solid #e9ecef",
+            border: `1px solid ${theme.border}`,
           }}
         >
           {savedSessions === null ? (
-            <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>Loading saved sessions…</p>
+            <p style={{ margin: 0, color: theme.muted, fontSize: "14px" }}>Loading saved sessions…</p>
           ) : savedSessions.length === 0 ? (
-            <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>No saved sessions yet.</p>
+            <p style={{ margin: 0, color: theme.muted, fontSize: "14px" }}>No saved sessions yet.</p>
           ) : (
             <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "14px" }}>
               {savedSessions.map((s) => (
                 <li key={s.id} style={{ marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "8px" }}>
                   <span style={{ flex: 1 }}>
-                    <strong>{s.name}</strong>
-                    <span style={{ color: "#666", fontSize: "12px", marginLeft: "6px" }}>
+                    <strong style={{ color: theme.text }}>{s.name}</strong>
+                    <span style={{ color: theme.muted, fontSize: "12px", marginLeft: "6px" }}>
                       {new Date(s.savedAt).toLocaleString()}
                     </span>
                   </span>
-                  <button type="button" onClick={() => handleLoad(s.id)} style={{ padding: "4px 8px" }}>
+                  <button type="button" onClick={() => handleLoad(s.id)} style={{ padding: "4px 10px", background: theme.primary, border: "none", borderRadius: "6px", color: "#fff", cursor: "pointer", fontSize: "13px" }}>
                     Load
                   </button>
-                  <button type="button" onClick={() => handleDelete(s.id)} style={{ padding: "4px 8px" }}>
+                  <button type="button" onClick={() => handleDelete(s.id)} style={{ padding: "4px 10px", background: theme.surfaceMuted, border: `1px solid ${theme.borderMuted}`, borderRadius: "6px", color: theme.text, cursor: "pointer", fontSize: "13px" }}>
                     Delete
                   </button>
                 </li>
@@ -518,101 +521,101 @@ export default function Home() {
           )}
         </div>
       </section>
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Analysis</h2>
+      <section style={{ marginTop: "1.5rem", padding: "1rem", background: theme.surfaceMuted, borderRadius: "8px", border: `1px solid ${theme.border}` }}>
+        <h2 style={{ color: theme.text, marginTop: 0, fontSize: "1.1rem" }}>Analysis</h2>
         {isAnalyzing && (
-          <p style={{ marginBottom: "0.5rem", color: "#666" }}>Analyzing…</p>
+          <p style={{ marginBottom: "0.5rem", color: theme.muted }}>Analyzing…</p>
         )}
-        <button type="button" onClick={loadSampleDataset} disabled={backendStatus?.ok !== true || isAnalyzing}>
+        <button type="button" onClick={loadSampleDataset} disabled={backendStatus?.ok !== true || isAnalyzing} style={{ padding: "8px 14px", background: theme.primary, border: "none", borderRadius: "6px", color: "#fff", cursor: backendStatus?.ok !== true || isAnalyzing ? "not-allowed" : "pointer", fontWeight: 600 }}>
           Load sample dataset
         </button>
-        <span style={{ fontSize: "13px", color: "#666", marginLeft: "0.5rem" }}>
-          Uses <a href="/sample-battery-data.csv" download="sample-battery-data.csv">sample-battery-data.csv</a> for demo.
+        <span style={{ fontSize: "13px", color: theme.muted, marginLeft: "0.5rem" }}>
+          Uses <a href="/sample-battery-data.csv" download="sample-battery-data.csv" style={{ color: theme.primary }}>sample-battery-data.csv</a> for demo.
         </span>
         {analyzeResult === null && !csvError && !isAnalyzing && (
-          <p style={{ marginTop: "0.5rem", color: "#666" }}>
+          <p style={{ marginTop: "0.5rem", color: theme.muted }}>
             Upload a CSV, fill the manual entry table (all fields required), or use the sample button. Results appear below.
           </p>
         )}
         {!isAnalyzing && !(analyzeResult?.ok && analyzeResult?.data) && (
-          <p style={{ marginTop: "0.75rem", fontSize: "13px", color: "#666" }}>
+          <p style={{ marginTop: "0.75rem", fontSize: "13px", color: theme.muted }}>
             Export: Run analysis to enable export.
           </p>
         )}
         {analyzeResult?.ok && analyzeResult.data && (
           <>
             <section style={{ marginTop: "1rem" }}>
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>Health summary</h3>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem", color: theme.text }}>Health summary</h3>
               <div
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
                   gap: "0.75rem",
                   padding: "1rem",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  border: "1px solid #e9ecef",
+                  background: theme.surface,
+                  borderRadius: "8px",
+                  border: `1px solid ${theme.border}`,
                 }}
               >
                 <div>
-                  <div style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>Health</div>
+                  <div style={{ fontSize: "12px", color: theme.muted, marginBottom: "2px" }}>Health</div>
                   <div
                     style={{
                       fontWeight: 600,
                       color:
                         analyzeResult.data.health.status === "Stable"
-                          ? "#198754"
+                          ? theme.success
                           : analyzeResult.data.health.status === "Warning"
-                            ? "#b8860b"
-                            : "#dc3545",
+                            ? theme.warning
+                            : theme.error,
                     }}
                   >
                     {analyzeResult.data.health.status}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>Total readings</div>
-                  <div style={{ fontWeight: 600 }}>{analyzeResult.data.summary.totalReadings}</div>
+                  <div style={{ fontSize: "12px", color: theme.muted, marginBottom: "2px" }}>Total readings</div>
+                  <div style={{ fontWeight: 600, color: theme.text }}>{analyzeResult.data.summary.totalReadings}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>Alert count</div>
-                  <div style={{ fontWeight: 600 }}>{analyzeResult.data.alerts.length}</div>
+                  <div style={{ fontSize: "12px", color: theme.muted, marginBottom: "2px" }}>Alert count</div>
+                  <div style={{ fontWeight: 600, color: theme.text }}>{analyzeResult.data.alerts.length}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>Average voltage</div>
-                  <div style={{ fontWeight: 600 }}>{analyzeResult.data.summary.averageVoltage.toFixed(2)} V</div>
+                  <div style={{ fontSize: "12px", color: theme.muted, marginBottom: "2px" }}>Average voltage</div>
+                  <div style={{ fontWeight: 600, color: theme.text }}>{analyzeResult.data.summary.averageVoltage.toFixed(2)} V</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: "12px", color: "#666", marginBottom: "2px" }}>Peak temperature</div>
-                  <div style={{ fontWeight: 600 }}>{analyzeResult.data.summary.peakTemperature.toFixed(1)} °C</div>
+                  <div style={{ fontSize: "12px", color: theme.muted, marginBottom: "2px" }}>Peak temperature</div>
+                  <div style={{ fontWeight: 600, color: theme.text }}>{analyzeResult.data.summary.peakTemperature.toFixed(1)} °C</div>
                 </div>
               </div>
             </section>
             <section style={{ marginTop: "1rem" }}>
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>Alerts</h3>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem", color: theme.text }}>Alerts</h3>
               <div
                 style={{
                   padding: "1rem",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  border: "1px solid #e9ecef",
+                  background: theme.surfaceMuted,
+                  borderRadius: "8px",
+                  border: `1px solid ${theme.border}`,
                 }}
               >
                 {analyzeResult.data.alerts.length === 0 ? (
-                  <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>No alerts.</p>
+                  <p style={{ margin: 0, color: theme.muted, fontSize: "14px" }}>No alerts.</p>
                 ) : (
                   <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "14px" }}>
                     {analyzeResult.data.alerts.map((a, i) => (
-                      <li key={i} style={{ marginBottom: "0.5rem" }}>
+                      <li key={i} style={{ marginBottom: "0.5rem", color: theme.text }}>
                         <span style={{ fontWeight: 600 }}>{a.type}</span>
                         {a.severity === "critical" ? (
-                          <span style={{ marginLeft: "6px", color: "#dc3545", fontSize: "12px" }}>(critical)</span>
+                          <span style={{ marginLeft: "6px", color: theme.error, fontSize: "12px" }}>(critical)</span>
                         ) : (
-                          <span style={{ marginLeft: "6px", color: "#b8860b", fontSize: "12px" }}>(warning)</span>
+                          <span style={{ marginLeft: "6px", color: theme.warning, fontSize: "12px" }}>(warning)</span>
                         )}
                         {" — "}
-                        <span style={{ color: "#495057" }}>{a.message}</span>
-                        <div style={{ fontSize: "12px", color: "#666", marginTop: "2px" }}>
+                        <span style={{ color: theme.text }}>{a.message}</span>
+                        <div style={{ fontSize: "12px", color: theme.muted, marginTop: "2px" }}>
                           {a.timestamp} · value: {a.value}
                         </div>
                       </li>
@@ -622,13 +625,13 @@ export default function Home() {
               </div>
             </section>
             <section style={{ marginTop: "1rem" }}>
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>Charts</h3>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem", color: theme.text }}>Charts</h3>
               <div
                 style={{
                   padding: "1rem",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  border: "1px solid #e9ecef",
+                  background: theme.surface,
+                  borderRadius: "8px",
+                  border: `1px solid ${theme.border}`,
                 }}
               >
                 <TimeSeriesCharts
@@ -638,25 +641,25 @@ export default function Home() {
               </div>
             </section>
             <section style={{ marginTop: "1rem" }}>
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>Anomalies</h3>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem", color: theme.text }}>Anomalies</h3>
               <div
                 style={{
                   padding: "1rem",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  border: "1px solid #e9ecef",
+                  background: theme.surfaceMuted,
+                  borderRadius: "8px",
+                  border: `1px solid ${theme.border}`,
                 }}
               >
                 {analyzeResult.data.anomalies.length === 0 ? (
-                  <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>No anomalies detected.</p>
+                  <p style={{ margin: 0, color: theme.muted, fontSize: "14px" }}>No anomalies detected.</p>
                 ) : (
                   <ul style={{ margin: 0, paddingLeft: "1.25rem", fontSize: "14px" }}>
                     {analyzeResult.data.anomalies.map((a, i) => (
-                      <li key={i} style={{ marginBottom: "0.5rem" }}>
+                      <li key={i} style={{ marginBottom: "0.5rem", color: theme.text }}>
                         <span style={{ fontWeight: 600 }}>{a.type}</span>
                         {" — "}
-                        <span style={{ color: "#495057" }}>{a.message}</span>
-                        <div style={{ fontSize: "12px", color: "#666", marginTop: "2px" }}>
+                        <span style={{ color: theme.text }}>{a.message}</span>
+                        <div style={{ fontSize: "12px", color: theme.muted, marginTop: "2px" }}>
                           {a.timestamp}
                           {a.value != null && ` · value: ${a.value}`}
                         </div>
@@ -667,32 +670,32 @@ export default function Home() {
               </div>
             </section>
             <section style={{ marginTop: "1rem" }}>
-              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem" }}>Export</h3>
+              <h3 style={{ marginBottom: "0.5rem", fontSize: "1rem", color: theme.text }}>Export</h3>
               <div
                 style={{
                   padding: "1rem",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  border: "1px solid #e9ecef",
+                  background: theme.surfaceAlt,
+                  borderRadius: "8px",
+                  border: `1px solid ${theme.border}`,
                 }}
               >
                 <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                   <button
                     type="button"
                     onClick={() => downloadJsonSummary(analyzeResult.data!)}
-                    style={{ padding: "6px 12px" }}
+                    style={{ padding: "8px 14px", background: theme.primary, border: "none", borderRadius: "6px", color: "#fff", cursor: "pointer", fontWeight: 500 }}
                   >
                     Export JSON summary
                   </button>
                   <button
                     type="button"
                     onClick={() => downloadAnomalyCsv(analyzeResult.data!.anomalies)}
-                    style={{ padding: "6px 12px" }}
+                    style={{ padding: "8px 14px", background: theme.primary, border: "none", borderRadius: "6px", color: "#fff", cursor: "pointer", fontWeight: 500 }}
                   >
                     Export anomalies CSV
                   </button>
                 </div>
-                <p style={{ margin: "0.5rem 0 0", fontSize: "13px", color: "#666" }}>
+                <p style={{ margin: "0.5rem 0 0", fontSize: "13px", color: theme.muted }}>
                   JSON includes summary, health, alerts, and anomalies. CSV lists all flagged anomalies.
                 </p>
               </div>
@@ -700,7 +703,7 @@ export default function Home() {
           </>
         )}
         {analyzeResult && !analyzeResult.ok && (
-          <p style={{ marginTop: "0.5rem", color: "red" }}>✗ {analyzeResult.error}</p>
+          <p style={{ marginTop: "0.5rem", color: theme.error }}>✗ {analyzeResult.error}</p>
         )}
       </section>
     </main>
