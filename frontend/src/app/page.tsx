@@ -204,8 +204,11 @@ export default function Home() {
                 temperature: String(r.temperature),
               }));
         setManualRows(rows);
+        const normalizedResult = session.result
+          ? { ...session.result, anomalies: session.result.anomalies ?? [] }
+          : null;
         setAnalyzeResult(
-          session.result ? { ok: true, data: session.result } : null
+          normalizedResult ? { ok: true, data: normalizedResult } : null
         );
         setCsvError(null);
         setCsvDetails(null);
@@ -254,7 +257,8 @@ export default function Home() {
         return data as AnalysisResponse;
       })
       .then((data) => {
-        setAnalyzeResult({ ok: true, data });
+        const normalized: AnalysisResponse = { ...data, anomalies: data.anomalies ?? [] };
+        setAnalyzeResult({ ok: true, data: normalized });
         setIsAnalyzing(false);
       })
       .catch((err) => {
